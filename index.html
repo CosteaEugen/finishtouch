@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finish Touch - Mobile Car Wash</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><img src="Galerie/3dpng.png" alt="Finish Touch Logo"></div>
+        <nav class="nav">
+            <a href="#services" data-lang="services">Services</a>
+            <a href="#pricing" data-lang="pricing">Pricing</a>
+            <a href="#reviews" data-lang="reviews">Reviews</a>
+            <a href="#contact" data-lang="contact">Contact</a>
+        </nav>
+        <button class="cta-button" data-lang="bookNow">Book Now</button>
+        <select id="language-selector">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+        </select>
+        <button class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </header>
+
+    <section class="hero">
+        <h1 data-lang="heroTitle">Professional Mobile Car Wash Services</h1>
+        <p data-lang="heroText">We bring the clean to your location, anytime.</p>
+        <button class="cta-button" data-lang="getStarted">Get Started</button>
+    </section>
+
+    <section id="services" class="services section">
+        <h2 data-lang="ourServices">Our Services</h2>
+        <div class="service-cards">
+            <div class="card" data-lang="exteriorWash">Exterior Wash</div>
+            <div class="card" data-lang="interiorCleaning">Interior Cleaning</div>
+            <div class="card" data-lang="fullDetailing">Full Detailing</div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing section">
+        <h2 data-lang="pricing">Pricing</h2>
+        <table>
+            <tr><th data-lang="service">Service</th><th data-lang="price">Price</th></tr>
+            <tr><td data-lang="exteriorWash">Exterior Wash</td><td>$25</td></tr>
+            <tr><td data-lang="interiorCleaning">Interior Cleaning</td><td>$35</td></tr>
+            <tr><td data-lang="fullDetailing">Full Detailing</td><td>$60</td></tr>
+        </table>
+    </section>
+
+    <section id="reviews" class="reviews section">
+        <h2 data-lang="reviews">Client Reviews</h2>
+        <div class="reviews-container">
+            <div class="review-form">
+                <h3>Leave a Review</h3>
+                <form id="reviewForm">
+                    <div class="form-group">
+                        <label for="reviewName">Your Name</label>
+                        <input type="text" id="reviewName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewEmail">Email (not shown publicly)</label>
+                        <input type="email" id="reviewEmail" name="email" required>
+                    </div>
+                    <div class="rating">
+                        <input type="radio" id="star5" name="rating" value="5" required />
+                        <label for="star5" title="5 stars">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" />
+                        <label for="star4" title="4 stars">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label for="star3" title="3 stars">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label for="star2" title="2 stars">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" />
+                        <label for="star1" title="1 star">★</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewText">Your Experience</label>
+                        <textarea id="reviewText" name="text" placeholder="Describe your experience..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="serviceUsed">Service Used</label>
+                        <select id="serviceUsed" name="service" required>
+                            <option value="exterior-wash">Exterior Wash</option>
+                            <option value="interior-cleaning">Interior Cleaning</option>
+                            <option value="full-detailing">Full Detailing</option>
+                        </select>
+                    </div>
+                    <label class="checkbox-container">
+                        <input type="checkbox" required name="agreement"> I confirm this is a genuine review
+                    </label>
+                    <button type="submit" class="submit-review">Submit Review</button>
+                </form>
+            </div>
+            <div class="reviews-list" id="reviewsList"></div>
+        </div>
+    </section>
+
+    <section id="gallery" class="gallery section">
+        <h2>Before & After Gallery</h2>
+        <div class="gallery-instructions">
+            <div class="instruction-box">
+                <i class="fas fa-hand-pointer"></i>
+                <h3>How to Use the Gallery</h3>
+                <p>Drag the slider left-right to see the full transformation</p>
+                <ul>
+                    <li>Click and drag the white slider in the center</li>
+                    <li>Slide left to see the final result</li>
+                    <li>Slide right to see the initial state</li>
+                </ul>
+                <span class="instruction-tip">* Use arrows to navigate between images</span>
+            </div>
+        </div>
+        <div class="gallery-container"></div>
+        <button class="gallery-nav prev">❮</button>
+        <button class="gallery-nav next">❯</button>
+    </section>
+
+    <section id="contact" class="contact section">
+        <h2 data-lang="contactUs">Contact Us</h2>
+        <form action="book.php" method="POST">
+            <label for="name" data-lang="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="email" data-lang="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="service" data-lang="service">Service:</label>
+            <select id="service" name="service" required>
+                <option value="exterior-wash" data-lang="exteriorWash">Exterior Wash</option>
+                <option value="interior-cleaning" data-lang="interiorCleaning">Interior Cleaning</option>
+                <option value="full-detailing" data-lang="fullDetailing">Full Detailing</option>
+            </select>
+            <label for="date" data-lang="preferredDate">Preferred Date:</label>
+            <input type="date" id="date" name="date" required>
+            <button type="submit" data-lang="bookNow">Book Now</button>
+        </form>
+    </section>
+
+    <section id="faq" class="faq section">
+        <h2 data-lang="faq">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">How long does a full detailing service take?</div>
+                <div class="faq-answer">A full detailing service typically takes 2-3 hours, depending on the vehicle's size and condition.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Do you provide your own water and electricity?</div>
+                <div class="faq-answer">Yes, we bring everything needed for the service, including our own water and power supply.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="social-icons">
+        <a href="https://www.facebook.com/yourprofile" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+        <a href="https://www.tiktok.com/@yourprofile" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+    </div>
+
+    <div class="ad-popup" id="adPopup">
+        <div class="ad-content">
+            <span class="close-ad">×</span>
+            <h3>Special Offer!</h3>
+            <p>Get 20% off your first Full Detailing service! Book now and mention code <strong>FIRST20</strong>.</p>
+            <button class="cta-button ad-book-now">Book Now</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Finish Touch. <span data-lang="rights">All rights reserved.</span></p>
+    </footer>
+
+    <script defer src="script.js"></script>
+</body>
+</html>
