@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const reviewsList = document.getElementById("reviewsList");
     const reviewForm = document.getElementById("reviewForm");
     const galleryContainer = document.querySelector(".gallery-container");
-    const prevButton = document.querySelector(".gallery-nav.prev");
-    const nextButton = document.querySelector(".gallery-nav.next");
     const hamburger = document.querySelector(".hamburger");
     const nav = document.querySelector(".nav");
 
@@ -111,76 +109,143 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadReviews();
 
+    // Logica galeriei
     let currentSlide = 0;
     const galleryImages = [
-        { before: "Galerie/inainte.jpg", after: "Galerie/dupa.jpg", caption: "Interior Detailing" },
-        { before: "Galerie/inainte2.jpg", after: "Galerie/dupa2.jpg", caption: "Interior Detailing" },
-        { before: "Galerie/inainte3.jpg", after: "Galerie/dupa3.jpg", caption: "Interior Detailing" }
+        { before: "Galerie/inainte.jpg", after: "Galerie/dupa.jpg", caption: "Interior Detailing 1" },
+        { before: "Galerie/inainte2.jpg", after: "Galerie/dupa2.jpg", caption: "Interior Detailing 2" },
+        { before: "Galerie/inainte3.jpg", after: "Galerie/dupa3.jpg", caption: "Interior Detailing 3" },
+        { before: "Galerie/inainte4.jpg", after: "Galerie/dupa4.jpg", caption: "Interior Detailing 4" }
     ];
 
-    function createGalleryItems() {
-        if (!galleryContainer) return;
-        galleryContainer.innerHTML = "";
+    function initializeGallery() {
+        if (!galleryContainer) {
+            console.error("Gallery container not found!");
+            return;
+        }
+        galleryContainer.innerHTML = `
+            <button class="gallery-nav prev">❮</button>
+            <div class="gallery-content"></div>
+            <button class="gallery-nav next">❯</button>
+        `;
+        const content = galleryContainer.querySelector(".gallery-content");
         galleryImages.forEach((image, index) => {
-            const galleryItem = document.createElement("div");
-            galleryItem.className = `gallery-item ${index === currentSlide ? "active" : ""}`;
-            galleryItem.innerHTML = `
+            const item = document.createElement("div");
+            item.className = `gallery-item ${index === currentSlide ? "active" : ""}`;
+            item.innerHTML = `
                 <div class="before-after-slider">
-                    <img class="before-image" src="${image.before}" alt="Before cleaning">
+                    <img class="before-image" src="${image.before}" alt="Before ${image.caption}">
                     <div class="slider-handle"></div>
-                    <img class="after-image" src="${image.after}" alt="After cleaning">
+                    <img class="after-image" src="${image.after}" alt="After ${image.caption}">
                 </div>
                 <p class="gallery-caption">${image.caption}</p>
             `;
-            galleryContainer.appendChild(galleryItem);
+            content.appendChild(item);
         });
-        initializeBeforeAfterSlider();
+
+        // Debug: Verificăm dacă săgețile sunt în DOM
+        const prevButton = galleryContainer.querySelector(".gallery-nav.prev");
+        const nextButton = galleryContainer.querySelector(".gallery-nav.next");
+        console.log("Prev button:", prevButton);
+        console.log("Next button:", nextButton);
+
+        setupSliders();
+        setupSwipe();
+        setupArrows();
     }
 
-    function initializeBeforeAfterSlider() {
-        const activeSlider = document.querySelector(".gallery-item.active .before-after-slider");
-        if (!activeSlider) return;
-        const handle = activeSlider.querySelector(".slider-handle");
-        const beforeImage = activeSlider.querySelector(".before-image");
-        let isDragging = false;
+    function setupSliders() {
+        const sliders = document.querySelectorAll(".before-after-slider");
+        sliders.forEach(slider => {
+            const handle = slider.querySelector(".slider-handle");
+            const beforeImage = slider.querySelector(".before-image");
+            let isDragging = false;
 
-        handle.addEventListener("mousedown", startDragging);
-        handle.addEventListener("touchstart", startDragging);
+            handle.style.left = "50%";
+            beforeImage.style.clipPath = "inset(0 50% 0 0)";
 
-        function startDragging(e) {
-            isDragging = true;
+            function startDrag(e) {
+                isDragging = true;
+                e.preventDefault();
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                const rect = slider.getBoundingClientRect();
+                const x = e.type === "touchmove" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+                let position = (x / rect.width) * 100;
+                position = Math.max(0, Math.min(100, position));
+                handle.style.left = `${position}%`;
+                beforeImage.style.clipPath = `inset(0 ${100 - position}% 0 0)`;
+            }
+
+            function stopDrag() {
+                isDragging = false;
+            }
+
+            handle.addEventListener("mousedown", startDrag);
+            handle.addEventListener("touchstart", startDrag);
+            document.addEventListener("mousemove", drag);
+            document.addEventListener("touchmove", drag, { passive: false });
+            document.addEventListener("mouseup", stopDrag);
+            document.addEventListener("touchend", stopDrag);
+        });
+    }
+
+    function setupSwipe() {
+        if (!galleryContainer) return;
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        galleryContainer.addEventListener("touchstart", (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        galleryContainer.addEventListener("touchmove", (e) => {
+            touchEndX = e.touches[0].clientX;
             e.preventDefault();
-            document.addEventListener("mousemove", handleDrag);
-            document.addEventListener("touchmove", handleDrag);
-            document.addEventListener("mouseup", stopDragging);
-            document.addEventListener("touchend", stopDragging);
-        }
+        }, { passive: false });
 
-        function handleDrag(e) {
-            if (!isDragging) return;
-            const rect = activeSlider.getBoundingClientRect();
-            const x = e.type === "touchmove" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-            let position = (x / rect.width) * 100;
-            position = Math.max(0, Math.min(100, position));
-            handle.style.left = `${position}%`;
-            beforeImage.style.clipPath = `inset(0 ${100 - position}% 0 0)`;
-        }
+        galleryContainer.addEventListener("touchend", () => {
+            const swipeDistance = touchEndX - touchStartX;
+            const minSwipeDistance = 50;
+            if (Math.abs(swipeDistance) > minSwipeDistance) {
+                if (swipeDistance > 0) {
+                    goToPrevSlide();
+                } else {
+                    goToNextSlide();
+                }
+            }
+        }, { passive: true });
+    }
 
-        function stopDragging() {
-            isDragging = false;
-            document.removeEventListener("mousemove", handleDrag);
-            document.removeEventListener("touchmove", handleDrag);
-            document.removeEventListener("mouseup", stopDragging);
-            document.removeEventListener("touchend", stopDragging);
+    function setupArrows() {
+        const prevButton = galleryContainer.querySelector(".gallery-nav.prev");
+        const nextButton = galleryContainer.querySelector(".gallery-nav.next");
+
+        if (prevButton) {
+            prevButton.addEventListener("click", () => {
+                goToPrevSlide();
+            });
+        } else {
+            console.error("Prev button not found!");
+        }
+        if (nextButton) {
+            nextButton.addEventListener("click", () => {
+                goToNextSlide();
+            });
+        } else {
+            console.error("Next button not found!");
         }
     }
 
-    function nextSlide() {
+    function goToNextSlide() {
         currentSlide = (currentSlide + 1) % galleryImages.length;
         updateGallery();
     }
 
-    function prevSlide() {
+    function goToPrevSlide() {
         currentSlide = (currentSlide - 1 + galleryImages.length) % galleryImages.length;
         updateGallery();
     }
@@ -190,15 +255,36 @@ document.addEventListener("DOMContentLoaded", () => {
         items.forEach((item, index) => {
             item.classList.toggle("active", index === currentSlide);
         });
-        initializeBeforeAfterSlider();
     }
 
-    if (prevButton && nextButton) {
-        prevButton.addEventListener("click", prevSlide);
-        nextButton.addEventListener("click", nextSlide);
+    // Funcția de mărire este păstrată, dar nu mai e apelată
+    function showEnlargedImage() {
+        let overlay = document.querySelector(".image-overlay");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.className = "image-overlay";
+            overlay.innerHTML = `
+                <span class="close-overlay">×</span>
+                <img src="${galleryImages[currentSlide].after}" alt="Enlarged ${galleryImages[currentSlide].caption}">
+            `;
+            document.body.appendChild(overlay);
+
+            const closeOverlay = overlay.querySelector(".close-overlay");
+            closeOverlay.addEventListener("click", () => {
+                overlay.style.display = "none";
+            });
+            overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) overlay.style.display = "none";
+            });
+        } else {
+            overlay.querySelector("img").src = galleryImages[currentSlide].after;
+        }
+        overlay.style.display = "flex";
     }
 
-    if (galleryContainer) createGalleryItems();
+    if (galleryContainer) {
+        initializeGallery();
+    }
 
     if (hamburger && nav) {
         hamburger.addEventListener("click", () => {
@@ -225,12 +311,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h2>Book Your Service</h2>
                 <form id="bookingForm" class="booking-form">
                     <div class="form-group">
+                        <label for="modal-phone">Phone Number:</label>
+                        <input type="tel" id="modal-phone" name="phone" placeholder="e.g. 1234567890" required>
+                    </div>
+                    <div class="form-group">
                         <label for="modal-name">Name:</label>
-                        <input type="text" id="modal-name" name="name" required>
+                        <input type="text" id="modal-name" name="name" placeholder="e.g. John Doe" required>
                     </div>
                     <div class="form-group">
                         <label for="modal-email">Email:</label>
-                        <input type="email" id="modal-email" name="email" required>
+                        <input type="email" id="modal-email" name="email" placeholder="e.g. john@example.com" required>
                     </div>
                     <div class="form-group">
                         <label for="modal-service">Service:</label>
@@ -272,11 +362,23 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const submitBtn = bookingForm.querySelector(".submit-btn");
+            const phoneInput = bookingForm.querySelector("#modal-phone");
             submitBtn.disabled = true;
             submitBtn.textContent = "Processing...";
+
+            if (!phoneInput.value.match(/^[0-9]+$/)) {
+                showNotification("Please enter a valid phone number (digits only)", "error");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Book Now";
+                return;
+            }
+
             try {
                 const formData = new FormData(bookingForm);
-                const response = await fetch("book.php", { method: "POST", body: formData });
+                const response = await fetch("book.php", {
+                    method: "POST",
+                    body: formData
+                });
                 const result = await response.json();
                 if (result.success) {
                     showNotification(result.message, "success");
@@ -284,9 +386,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     bookingForm.reset();
                     setTimeout(() => window.location.href = "thank-you.html", 2000);
                 } else {
-                    throw new Error(result.message);
+                    throw new Error(result.message || "Booking failed");
                 }
             } catch (error) {
+                console.error("Error:", error);
                 showNotification(error.message || "Error booking. Please try again.", "error");
             } finally {
                 submitBtn.disabled = false;

@@ -1,5 +1,6 @@
 {
     "en": {
+        "phone": "Phone Number",
         "services": "Services",
         "pricing": "Pricing",
         "reviews": "Reviews",
@@ -21,6 +22,7 @@
         "rights": "All rights reserved."
     },
     "fr": {
+        "phone": "Numéro de téléphone",
         "services": "Services",
         "pricing": "Tarifs",
         "reviews": "Avis",

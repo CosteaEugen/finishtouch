@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finish Touch - Mobile Car Wash</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -115,35 +115,48 @@
             <div class="instruction-box">
                 <i class="fas fa-hand-pointer"></i>
                 <h3>How to Use the Gallery</h3>
-                <p>Drag the slider left-right to see the full transformation</p>
+                <p>Drag the slider left-right to see the full transformation. Swipe on mobile to switch images.</p>
                 <ul>
                     <li>Click and drag the white slider in the center</li>
                     <li>Slide left to see the final result</li>
                     <li>Slide right to see the initial state</li>
+                    <li>Click arrows to navigate</li>
                 </ul>
-                <span class="instruction-tip">* Use arrows to navigate between images</span>
+                <span class="instruction-tip">* Use arrows on desktop or swipe on mobile</span>
             </div>
         </div>
-        <div class="gallery-container"></div>
-        <button class="gallery-nav prev">❮</button>
-        <button class="gallery-nav next">❯</button>
+        <div class="gallery-container">
+            <!-- Imaginile și săgețile vor fi generate din JavaScript -->
+        </div>
     </section>
 
     <section id="contact" class="contact section">
         <h2 data-lang="contactUs">Contact Us</h2>
         <form action="book.php" method="POST">
-            <label for="name" data-lang="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            <label for="email" data-lang="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="service" data-lang="service">Service:</label>
-            <select id="service" name="service" required>
-                <option value="exterior-wash" data-lang="exteriorWash">Exterior Wash</option>
-                <option value="interior-cleaning" data-lang="interiorCleaning">Interior Cleaning</option>
-                <option value="full-detailing" data-lang="fullDetailing">Full Detailing</option>
-            </select>
-            <label for="date" data-lang="preferredDate">Preferred Date:</label>
-            <input type="date" id="date" name="date" required>
+            <div class="form-group">
+                <label for="name" data-lang="name">Your Full Name:</label>
+                <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
+            </div>
+            <div class="form-group">
+                <label for="email" data-lang="email">Your Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="e.g. john@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Your Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="e.g. 1234567890" required>
+            </div>
+            <div class="form-group">
+                <label for="service" data-lang="service">Choose a Service:</label>
+                <select id="service" name="service" required>
+                    <option value="exterior-wash" data-lang="exteriorWash">Exterior Wash</option>
+                    <option value="interior-cleaning" data-lang="interiorCleaning">Interior Cleaning</option>
+                    <option value="full-detailing" data-lang="fullDetailing">Full Detailing</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date" data-lang="preferredDate">Preferred Service Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
             <button type="submit" data-lang="bookNow">Book Now</button>
         </form>
     </section>
@@ -177,9 +190,9 @@
     </div>
 
     <footer class="footer">
-        <p>&copy; 2025 Finish Touch. <span data-lang="rights">All rights reserved.</span></p>
+        <p>© 2025 Finish Touch. <span data-lang="rights">All rights reserved.</span></p>
     </footer>
 
-    <script defer src="script.js"></script>
+    <script defer src="./script.js"></script>
 </body>
 </html>
