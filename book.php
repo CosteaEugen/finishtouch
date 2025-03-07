@@ -18,19 +18,16 @@ use PHPMailer\PHPMailer\Exception;
 $response = array();
 
 try {
-    // Verificăm dacă cererea este POST
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
         throw new Exception("Invalid request method");
     }
 
-    // Preluăm și sanitizăm datele din formular
     $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $phone = filter_var($_POST['phone'] ?? '', FILTER_SANITIZE_STRING);
     $service = filter_var($_POST['service'] ?? '', FILTER_SANITIZE_STRING);
     $date = filter_var($_POST['date'] ?? '', FILTER_SANITIZE_STRING);
 
-    // Validăm datele
     if (empty($name) || strlen($name) < 2) {
         throw new Exception("Name must be at least 2 characters long");
     }
@@ -48,19 +45,20 @@ try {
         throw new Exception("Invalid service selected");
     }
 
-    // Configurăm PHPMailer cu Gmail SMTP
     $mail = new PHPMailer(true);
     try {
-        // Setări server SMTP
+        $mail->SMTPDebug = 2; // Activăm debug-ul (pentru testare, setează la 0 în producție)
+        $mail->Debugoutput = function($str, $level) use (&$response) {
+            $response['debug'] .= "[$level] $str\n"; // Colectăm debug-ul
+        };
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'costeaeugen99@gmail.com';
-        $mail->Password = 'vill niwh jgng yyhs';
+        $mail->Password = 'vill niwh jgng yyhs'; // Parola de aplicație Gmail
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        // Setăm detaliile email-ului
         $mail->setFrom('costeaeugen99@gmail.com', 'Finish Touch Booking');
         $mail->addAddress('costea_gen@yahoo.com');
         $mail->addReplyTo($email, $name);
@@ -73,7 +71,6 @@ try {
                       "Service: $service\n" .
                       "Date: $date\n";
 
-        // Trimitem email-ul
         $mail->send();
         $response['success'] = true;
         $response['message'] = "Booking successfully recorded!";
@@ -85,6 +82,5 @@ try {
     $response['message'] = $e->getMessage();
 }
 
-// Returnăm răspunsul JSON
 echo json_encode($response);
 ?>

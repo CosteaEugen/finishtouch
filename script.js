@@ -365,14 +365,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const phoneInput = bookingForm.querySelector("#modal-phone");
             submitBtn.disabled = true;
             submitBtn.textContent = "Processing...";
-
+    
             if (!phoneInput.value.match(/^[0-9]+$/)) {
                 showNotification("Please enter a valid phone number (digits only)", "error");
                 submitBtn.disabled = false;
                 submitBtn.textContent = "Book Now";
                 return;
             }
-
+    
             try {
                 const formData = new FormData(bookingForm);
                 const response = await fetch("book.php", {
@@ -380,11 +380,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: formData
                 });
                 const result = await response.json();
+                console.log("Booking response:", result); // Debug
                 if (result.success) {
                     showNotification(result.message, "success");
                     modal.style.display = "none";
                     bookingForm.reset();
-                    setTimeout(() => window.location.href = "thank-you.html", 2000);
+                    setTimeout(() => {
+                        window.location.href = "./thank-you.html"; // Cale relativă
+                    }, 2000);
                 } else {
                     throw new Error(result.message || "Booking failed");
                 }
@@ -397,6 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    
 
     const dateInputs = document.querySelectorAll('input[type="date"]');
     dateInputs.forEach(input => {
